@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bitcamp.java89.ems2.dao.impl.MemberMysqlDao;
-import bitcamp.java89.ems2.dao.impl.TeacherMysqlDao;
+import bitcamp.java89.ems2.dao.MemberDao;
+import bitcamp.java89.ems2.dao.TeacherDao;
 import bitcamp.java89.ems2.domain.Teacher;
 
 @WebServlet("/teacher/update")
@@ -34,7 +34,6 @@ public class TeacherUpdateServlet extends HttpServlet {
       teacher.setFacebook(request.getParameter("facebook"));
       teacher.setTwitter(request.getParameter("twitter"));
       
-      response.setHeader("Refresh", "1;url=list");
       response.setContentType("text/html;charset=UTF-8");
       PrintWriter out = response.getWriter();
       
@@ -42,6 +41,7 @@ public class TeacherUpdateServlet extends HttpServlet {
       out.println("<html>");
       out.println("<head>");
       out.println("<meta charset='UTF-8'>");
+      out.println("<meta http-equiv='Refresh' content='1;url=list'>");
       out.println("<title>강사관리-변경</title>");
       out.println("</head>");
       out.println("<body>");
@@ -52,13 +52,13 @@ public class TeacherUpdateServlet extends HttpServlet {
       
       out.println("<h1>변경 결과</h1>");
     
-      TeacherMysqlDao teacherDao = TeacherMysqlDao.getInstance();
+      TeacherDao teacherDao = (TeacherDao)this.getServletContext().getAttribute("teacherDao");
       
       if (!teacherDao.exist(teacher.getMemberNo())) {
         throw new Exception("강사를 찾지 못했습니다.");
       }
       
-      MemberMysqlDao memberDao = MemberMysqlDao.getInstance();
+      MemberDao memberDao = (MemberDao)this.getServletContext().getAttribute("memberDao");
       memberDao.update(teacher);
       
       teacherDao.update(teacher);

@@ -28,8 +28,8 @@ public class ErrorServlet extends HttpServlet {
     out.println("</head>");
     out.println("<body>");
     out.println("<h1>오류 내용</h1>");
-
- // 상세한 오류 내용을 출력한다.
+    
+    // 상세한 오류 내용을 출력한다.
     // ServletRequest 보관소에 "error"라는 이름으로 저장된 오류 정보를 꺼낸다.
     Exception exception = (Exception)request.getAttribute("error");
     
@@ -45,3 +45,11 @@ public class ErrorServlet extends HttpServlet {
     out.println("</html>");
   }  
 }
+
+
+
+
+
+
+
+

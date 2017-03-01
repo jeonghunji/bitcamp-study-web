@@ -9,31 +9,23 @@ import bitcamp.java89.ems2.dao.StudentDao;
 import bitcamp.java89.ems2.domain.Student;
 import bitcamp.java89.ems2.util.DataSource;
 
-public class StudentMysqlDao implements StudentDao{
+public class StudentMysqlDao implements StudentDao {
   DataSource ds;
   
-  private StudentMysqlDao() {
-    ds = DataSource.getInstance();
+  public void setDataSource(DataSource ds) {
+    this.ds = ds;
   }
-  
-  static StudentMysqlDao instance;
-  
-  public static StudentMysqlDao getInstance() {
-    if (instance == null) {
-      instance = new StudentMysqlDao();
-    }
-    
-    return instance;
-  }
-  
+
   public ArrayList<Student> getList() throws Exception {
     ArrayList<Student> list = new ArrayList<>();
-    Connection con = ds.getConnection();
-    try (PreparedStatement stmt = con.prepareStatement(
-        "select mno, name, tel, email, work, lst_schl, schl_nm, path" +
-        " from stud" + 
-        " left outer join memb on stud.sno=memb.mno");
-    ResultSet rs = stmt.executeQuery(); ){
+    Connection con = ds.getConnection(); // 커넥션풀에서 한 개의 Connection 객체를 임대한다.
+    try (
+      PreparedStatement stmt = con.prepareStatement(
+          "select mno, name, tel, email, work, lst_schl, schl_nm, path" +
+          " from stud" + 
+          " left outer join memb on stud.sno=memb.mno");
+      ResultSet rs = stmt.executeQuery(); ){
+      
       while (rs.next()) { // 서버에서 레코드 한 개를 가져왔다면,
         Student student = new Student();
         student.setMemberNo(rs.getInt("mno"));
@@ -50,7 +42,6 @@ public class StudentMysqlDao implements StudentDao{
     } finally {
       ds.returnConnection(con);
     }
-    
     return list;
   }
   
